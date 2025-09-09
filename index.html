@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Disaster Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Main map container -->
+        <div id="map"></div>
+        
+        <!-- Search and filter bar -->
+        <div class="search-filter-bar">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search incidents...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-container">
+                <select id="filter-type">
+                    <option value="all">All Disaster Types</option>
+                    <option value="flood">Flood</option>
+                    <option value="fire">Fire</option>
+                    <option value="earthquake">Earthquake</option>
+                    <option value="cyclone">Cyclone</option>
+                    <option value="drought">Drought</option>
+                    <option value="heatwave">Heatwave</option>
+                </select>
+                <select id="filter-severity">
+                    <option value="all">All Severity Levels</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <select id="filter-state">
+                    <option value="all">All States</option>
+                    <option value="tamil-nadu">Tamil Nadu</option>
+                    <option value="maharashtra">Maharashtra</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="west-bengal">West Bengal</option>
+                    <option value="telangana">Telangana</option>
+                    <option value="gujarat">Gujarat</option>
+                </select>
+                <div class="date-filter">
+                    <input type="date" id="date-from" placeholder="From">
+                    <input type="date" id="date-to" placeholder="To">
+                </div>
+                <button id="apply-filters">Apply Filters</button>
+                <button id="reset-filters">Reset</button>
+            </div>
+        </div>
+        
+        <!-- Control panel with tabs -->
+        <div class="control-panel">
+            <div class="panel-toggle">
+                <span>&#9776;</span>
+            </div>
+            <div class="panel-content">
+                <h2>Disaster Management</h2>
+                
+                <!-- Tab navigation -->
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="alerts">Alerts</button>
+                    <button class="tab-btn" data-tab="report">Report Incident</button>
+                    <button class="tab-btn" data-tab="resources">Resources</button>
+                    <button class="tab-btn" data-tab="analytics">Analytics</button>
+                    <button class="tab-btn" data-tab="contacts">Contacts</button>
+                </div>
+                
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <!-- Alerts Tab -->
+                    <div class="tab-pane active" id="alerts-tab">
+                        <div class="panel-section">
+                            <h3>Alerts</h3>
+                            <div class="alerts-feed">
+                                <div class="alert-item high">
+                                    <span class="alert-time">10:30 AM</span>
+                                    <span class="alert-text">Flash flood warning in Kerala region</span>
+                                </div>
+                                <div class="alert-item medium">
+                                    <span class="alert-time">09:15 AM</span>
+                                    <span class="alert-text">Cyclone approaching eastern coast</span>
+                                </div>
+                                <div class="alert-item low">
+                                    <span class="alert-time">Yesterday</span>
+                                    <span class="alert-text">Earthquake aftershock possibility in Gujarat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Incident Tab -->
+                    <div class="tab-pane" id="report-tab">
+                        <div class="panel-section">
+                            <h3>Report New Incident</h3>
+                            <form id="incident-form">
+                                <div class="form-group">
+                                    <label for="incident-type">Disaster Type</label>
+                                    <select id="incident-type" required>
+                                        <option value="">Select Type</option>
+                                        <option value="flood">Flood</option>
+                                        <option value="fire">Fire</option>
+                                        <option value="earthquake">Earthquake</option>
+                                        <option value="cyclone">Cyclone</option>
+                                        <option value="drought">Drought</option>
+                                        <option value="heatwave">Heatwave</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="incident-severity">Severity Level</label>
+                                    <select id="incident-severity" required>
+                                        <option value="">Select Severity</option>
+                                        <option value="high">High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="incident-location">Location</label>
+                                    <input type="text" id="incident-location" placeholder="Enter location" required>
+                                    <button type="button" id="use-gps">Use GPS</button>
+                                </div>
+                                <div class="form-group coordinates">
+                                    <div>
+                                        <label for="incident-lat">Latitude</label>
+                                        <input type="number" id="incident-lat" step="0.000001">
+                                    </div>
+                                    <div>
+                                        <label for="incident-lng">Longitude</label>
+                                        <input type="number" id="incident-lng" step="0.000001">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="incident-description">Description</label>
+                                    <textarea id="incident-description" rows="3" placeholder="Describe the incident"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="incident-photos">Photos (Optional)</label>
+                                    <input type="file" id="incident-photos" accept="image/*" multiple>
+                                </div>
+                                <button type="submit" class="submit-btn">Submit Report</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Resources Tab -->
+                    <div class="tab-pane" id="resources-tab">
+                        <div class="panel-section">
+                            <h3>Resource Tracking</h3>
+                            <div class="resource-tabs">
+                                <button class="resource-tab active" data-resource="ambulances">Ambulances</button>
+                                <button class="resource-tab" data-resource="rescue-teams">Rescue Teams</button>
+                                <button class="resource-tab" data-resource="shelters">Shelters</button>
+                            </div>
+                            
+                            <!-- Ambulances -->
+                            <div class="resource-content active" id="ambulances-content">
+                                <div class="resource-list">
+                                    <div class="resource-card available">
+                                        <div class="resource-header">
+                                            <span class="resource-id">AMB-001</span>
+                                            <span class="resource-status">Available</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Delhi General Hospital</p>
+                                            <p><strong>Type:</strong> Advanced Life Support</p>
+                                            <p><strong>Last Updated:</strong> 10 mins ago</p>
+                                        </div>
+                                        <button class="assign-btn">Assign to Incident</button>
+                                    </div>
+                                    <div class="resource-card busy">
+                                        <div class="resource-header">
+                                            <span class="resource-id">AMB-002</span>
+                                            <span class="resource-status">On Mission</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Mumbai, Maharashtra</p>
+                                            <p><strong>Type:</strong> Basic Life Support</p>
+                                            <p><strong>Assigned to:</strong> Cyclone Response</p>
+                                        </div>
+                                        <button class="track-btn">Track Location</button>
+                                    </div>
+                                    <div class="resource-card available">
+                                        <div class="resource-header">
+                                            <span class="resource-id">AMB-003</span>
+                                            <span class="resource-status">Available</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Chennai Medical Center</p>
+                                            <p><strong>Type:</strong> Advanced Life Support</p>
+                                            <p><strong>Last Updated:</strong> 5 mins ago</p>
+                                        </div>
+                                        <button class="assign-btn">Assign to Incident</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Rescue Teams -->
+                            <div class="resource-content" id="rescue-teams-content">
+                                <div class="resource-list">
+                                    <div class="resource-card available">
+                                        <div class="resource-header">
+                                            <span class="resource-id">RT-001</span>
+                                            <span class="resource-status">Available</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Delhi NDRF Base</p>
+                                            <p><strong>Specialty:</strong> Water Rescue</p>
+                                            <p><strong>Team Size:</strong> 12 personnel</p>
+                                        </div>
+                                        <button class="assign-btn">Assign to Incident</button>
+                                    </div>
+                                    <div class="resource-card busy">
+                                        <div class="resource-header">
+                                            <span class="resource-id">RT-002</span>
+                                            <span class="resource-status">Deployed</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Kerala Flood Zone</p>
+                                            <p><strong>Specialty:</strong> Water Rescue</p>
+                                            <p><strong>Assigned to:</strong> Flash Flood Response</p>
+                                        </div>
+                                        <button class="track-btn">Track Location</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Shelters -->
+                            <div class="resource-content" id="shelters-content">
+                                <div class="resource-list">
+                                    <div class="resource-card">
+                                        <div class="resource-header">
+                                            <span class="resource-id">SH-001</span>
+                                            <span class="resource-status shelter-status">Space Available</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Chennai Government School</p>
+                                            <p><strong>Capacity:</strong> 200 people</p>
+                                            <p><strong>Currently Occupied:</strong> 45 people</p>
+                                            <div class="capacity-bar">
+                                                <div class="capacity-fill" style="width: 22%;"></div>
+                                            </div>
+                                        </div>
+                                        <button class="details-btn">View Details</button>
+                                    </div>
+                                    <div class="resource-card">
+                                        <div class="resource-header">
+                                            <span class="resource-id">SH-002</span>
+                                            <span class="resource-status shelter-status">Almost Full</span>
+                                        </div>
+                                        <div class="resource-details">
+                                            <p><strong>Location:</strong> Mumbai Community Center</p>
+                                            <p><strong>Capacity:</strong> 150 people</p>
+                                            <p><strong>Currently Occupied:</strong> 120 people</p>
+                                            <div class="capacity-bar">
+                                                <div class="capacity-fill" style="width: 80%;"></div>
+                                            </div>
+                                        </div>
+                                        <button class="details-btn">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Tab -->
+                    <div class="tab-pane" id="analytics-tab">
+                        <div class="panel-section">
+                            <h3>Reports & Analytics</h3>
+                            <div class="chart-container">
+                                <h4>Incidents by Type</h4>
+                                <canvas id="incidents-by-type-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Incidents Over Time</h4>
+                                <canvas id="incidents-over-time-chart"></canvas>
+                            </div>
+                            <div class="chart-container">
+                                <h4>Resource Usage</h4>
+                                <canvas id="resource-usage-chart"></canvas>
+                            </div>
+                            <div class="export-options">
+                                <button id="export-pdf"><i class="fas fa-file-pdf"></i> Export as PDF</button>
+                                <button id="export-excel"><i class="fas fa-file-excel"></i> Export as Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contacts Tab -->
+                    <div class="tab-pane" id="contacts-tab">
+                        <div class="panel-section">
+                            <h3>Emergency Contacts</h3>
+                            <div class="contacts-list">
+                                <div class="contact-item">
+                                    <span class="contact-name">National Disaster Response Force</span>
+                                    <span class="contact-number">1078</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-name">Emergency Medical Services</span>
+                                    <span class="contact-number">108</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-name">Police</span>
+                                    <span class="contact-number">100</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-name">Fire Services</span>
+                                    <span class="contact-number">101</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-name">Disaster Management Authority</span>
+                                    <span class="contact-number">011-1070</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-name">Coast Guard</span>
+                                    <span class="contact-number">1554</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

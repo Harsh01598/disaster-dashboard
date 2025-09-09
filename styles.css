@@ -1,0 +1,839 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    overflow: hidden;
+}
+
+.dashboard-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Search and filter bar */
+.search-filter-bar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-container {
+    display: flex;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+}
+
+.search-container button {
+    background-color: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 2;
+}
+
+.filter-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.date-filter {
+    display: flex;
+    gap: 5px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.date-filter input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    flex: 1;
+}
+
+#apply-filters, #reset-filters {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#apply-filters {
+    background-color: #0078d4;
+    color: white;
+}
+
+#reset-filters {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+/* Control Panel Styles */
+.control-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 400px;
+    max-height: calc(100vh - 20px);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.panel-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 3;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.panel-content {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 20px);
+}
+
+.panel-content h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: #0078d4;
+}
+
+.tab-btn.active {
+    color: #0078d4;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #0078d4;
+}
+
+/* Tab Content */
+.tab-content {
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.panel-section {
+    margin-bottom: 25px;
+}
+
+.panel-section h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Alerts Feed Styles */
+.alerts-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.alerts-feed h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    padding: 5px 0;
+    z-index: 1;
+}
+
+.alert-item {
+    padding: 12px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.alert-item.high {
+    background-color: rgba(255, 0, 0, 0.1);
+    border-left: 4px solid #e74c3c;
+}
+
+.alert-item.medium {
+    background-color: rgba(255, 165, 0, 0.1);
+    border-left: 4px solid #f39c12;
+}
+
+.alert-item.low {
+    background-color: rgba(255, 255, 0, 0.1);
+    border-left: 4px solid #2ecc71;
+}
+
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.alert-type {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.alert-time {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.alert-text {
+    font-size: 14px;
+}
+
+.alert-location {
+    font-size: 0.9em;
+    color: #34495e;
+    margin-bottom: 5px;
+}
+
+.alert-description {
+    font-size: 0.9em;
+    color: #2c3e50;
+}
+
+/* Incident Reporting Form */
+.incident-form {
+    padding: 15px;
+}
+
+#incident-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #2c3e50;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.coordinates-group {
+    display: flex;
+    gap: 10px;
+}
+
+.coordinates-group .form-group {
+    flex: 1;
+}
+
+.form-group.coordinates {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.form-group.coordinates > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.gps-button, #use-gps {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+    align-self: flex-start;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gps-button:hover, #use-gps:hover {
+    background-color: #2980b9;
+}
+
+.submit-button, .submit-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover, .submit-btn:hover {
+    background-color: #219653;
+}
+
+/* Emergency Contacts Styles */
+.contacts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.contact-item {
+    padding: 10px;
+    background-color: rgba(52, 152, 219, 0.1);
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contact-name {
+    font-weight: 500;
+}
+
+.contact-number {
+    font-weight: bold;
+    color: #3498db;
+    background-color: rgba(52, 152, 219, 0.2);
+    padding: 3px 8px;
+    border-radius: 15px;
+}
+
+/* Resource Tracking */
+.resource-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.resource-tab {
+    padding: 8px 15px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.resource-tab.active {
+    background-color: #0078d4;
+    color: white;
+}
+
+.resource-content {
+    display: none;
+}
+
+.resource-content.active {
+    display: block;
+}
+
+.resource-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.resource-card {
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.resource-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+}
+
+.resource-id {
+    font-weight: 600;
+    color: #333;
+}
+
+.resource-status {
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.resource-card.available .resource-status {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #27ae60;
+}
+
+.resource-card.busy .resource-status {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.shelter-status {
+    background-color: rgba(52, 152, 219, 0.2);
+    color: #3498db;
+}
+
+.resource-details {
+    padding: 15px;
+}
+
+.resource-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.capacity-bar {
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.capacity-fill {
+    height: 100%;
+    background-color: #3498db;
+}
+
+.assign-btn, .track-btn, .details-btn {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.assign-btn:hover, .track-btn:hover, .details-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.assign-btn {
+    color: #27ae60;
+}
+
+.track-btn {
+    color: #e67e22;
+}
+
+/* Analytics Section */
+.chart-container {
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+}
+
+.export-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.export-options button {
+    padding: 8px 15px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.export-options button:hover {
+    background-color: #e0e0e0;
+}
+
+#export-pdf {
+    color: #e74c3c;
+}
+
+#export-excel {
+    color: #27ae60;
+}
+
+/* Resource tracking section */
+.resource-tracking {
+    padding: 15px;
+}
+
+.resource-tracking h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.resource-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.resource-tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background-color: #f8f9fa;
+    margin-right: 5px;
+}
+
+.resource-tab.active {
+    background-color: white;
+    border-color: #ddd;
+    border-bottom-color: white;
+    font-weight: bold;
+    color: #3498db;
+}
+
+.resource-content {
+    display: none;
+}
+
+.resource-content.active {
+    display: block;
+}
+
+.resource-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.resource-card {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+    position: relative;
+}
+
+.resource-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resource-id {
+    font-size: 0.8em;
+    color: #7f8c8d;
+    font-weight: normal;
+}
+
+.resource-details {
+    margin-bottom: 15px;
+}
+
+.resource-details p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.resource-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.status-available {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-deployed {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-maintenance {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.capacity-bar {
+    height: 8px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+.capacity-fill {
+    height: 100%;
+    background-color: #3498db;
+    border-radius: 4px;
+}
+
+.resource-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.assign-btn, .details-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.assign-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.details-btn {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+}
+
+/* Analytics section */
+.analytics {
+    padding: 15px;
+}
+
+.analytics h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.chart-container {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.chart-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.chart-wrapper {
+    height: 250px;
+    position: relative;
+}
+
+.export-options {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.export-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#export-pdf {
+    background-color: #e74c3c;
+    color: white;
+}
+
+#export-excel {
+    background-color: #27ae60;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .control-panel {
+        width: 300px;
+        transform: translateX(100%);
+    }
+    
+    .control-panel.expanded {
+        transform: translateX(0);
+    }
+    
+    .panel-toggle {
+        right: 20px;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .filter-container {
+        flex-direction: column;
+    }
+    
+    .date-filter {
+        flex-direction: column;
+    }
+    
+    .resource-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .control-panel {
+        width: 100%;
+        max-width: 100%;
+        right: 0;
+        top: 0;
+        border-radius: 0;
+        height: 100vh;
+    }
+}
