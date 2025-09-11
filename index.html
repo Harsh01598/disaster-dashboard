@@ -81,14 +81,23 @@
                                 <div class="alert-item high">
                                     <span class="alert-time">10:30 AM</span>
                                     <span class="alert-text">Flash flood warning in Kerala region</span>
+                                    <div class="alert-actions">
+                                        <button class="ai-allocate-btn" data-id="D001">AI Allocate Resources</button>
+                                    </div>
                                 </div>
                                 <div class="alert-item medium">
                                     <span class="alert-time">09:15 AM</span>
                                     <span class="alert-text">Cyclone approaching eastern coast</span>
+                                    <div class="alert-actions">
+                                        <button class="ai-allocate-btn" data-id="D002">AI Allocate Resources</button>
+                                    </div>
                                 </div>
                                 <div class="alert-item low">
                                     <span class="alert-time">Yesterday</span>
                                     <span class="alert-text">Earthquake aftershock possibility in Gujarat</span>
+                                    <div class="alert-actions">
+                                        <button class="ai-allocate-btn" data-id="D003">AI Allocate Resources</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +170,7 @@
                             <!-- Ambulances -->
                             <div class="resource-content active" id="ambulances-content">
                                 <div class="resource-list">
-                                    <div class="resource-card available">
+                                    <div class="resource-card available" data-id="AMB-001">
                                         <div class="resource-header">
                                             <span class="resource-id">AMB-001</span>
                                             <span class="resource-status">Available</span>
@@ -171,7 +180,10 @@
                                             <p><strong>Type:</strong> Advanced Life Support</p>
                                             <p><strong>Last Updated:</strong> 10 mins ago</p>
                                         </div>
-                                        <button class="assign-btn">Assign to Incident</button>
+                                        <div class="resource-actions">
+                                            <button class="assign-btn">Assign to Incident</button>
+                                            <button class="ai-allocate-btn" data-id="AMB-001">AI Allocate</button>
+                                        </div>
                                     </div>
                                     <div class="resource-card busy">
                                         <div class="resource-header">

@@ -111,6 +111,48 @@ body {
     color: #333;
 }
 
+/* Mobile Responsive Styles */
+@media screen and (max-width: 768px) {
+    .search-filter-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .search-container,
+    .filter-container,
+    .date-filter {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-container select {
+        width: 100%;
+    }
+
+    #notification-container {
+        width: 90%;
+        right: 5%;
+    }
+
+    .notification {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .alert-item {
+        padding: 8px;
+    }
+
+    .alert-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .alert-actions button {
+        width: 100%;
+    }
+}
+
 /* Control Panel Styles */
 .control-panel {
     position: absolute;
@@ -124,6 +166,134 @@ body {
     z-index: 2;
     overflow: hidden;
     transition: transform 0.3s ease;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced touch targets for mobile */
+button, 
+.tab-btn,
+.resource-tab,
+.alert-actions button,
+.form-group button,
+#search-btn,
+#apply-filters,
+#reset-filters {
+    min-height: 44px;
+    padding: 12px 20px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media screen and (max-width: 768px) {
+    .control-panel {
+        width: 90%;
+        right: 5%;
+        max-height: 60vh;
+    }
+}
+
+/* Notification styles */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    animation: slide-in 0.3s ease-out;
+    border-left: 4px solid #3498db;
+}
+
+.notification.success {
+    border-left-color: #2ecc71;
+}
+
+.notification.warning {
+    border-left-color: #f39c12;
+}
+
+.notification.error {
+    border-left-color: #e74c3c;
+}
+
+.notification p {
+    margin: 0;
+    flex: 1;
+    font-size: 14px;
+}
+
+.notification .close-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #7f8c8d;
+    padding: 0 5px;
+}
+
+.notification.fade-out {
+    animation: fade-out 0.5s ease-out forwards;
+}
+
+@keyframes slide-in {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fade-out {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Error notification */
+#error-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 12px 20px;
+    z-index: 2000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    animation: fade-in 0.3s ease-out;
+}
+
+#error-notification p {
+    margin: 0;
+    font-size: 14px;
+}
+
+#error-notification .close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #721c24;
+    margin-left: 15px;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .panel-toggle {
@@ -261,6 +431,49 @@ body {
 .alert-item.low {
     background-color: rgba(255, 255, 0, 0.1);
     border-left: 4px solid #2ecc71;
+}
+
+.alert-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ai-allocate-btn {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.ai-allocate-btn:hover {
+    background-color: #3498db;
+}
+
+.ai-allocate-btn:before {
+    content: '🤖';
+    margin-right: 5px;
+}
+
+.track-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.track-btn:hover {
+    background-color: #2ecc71;
 }
 
 .alert-header {
@@ -528,14 +741,20 @@ body {
     background-color: #3498db;
 }
 
+.resource-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
 .assign-btn, .track-btn, .details-btn {
-    width: 100%;
+    flex: 1;
     padding: 8px;
     border: none;
-    background-color: #f0f0f0;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
+    font-size: 12px;
 }
 
 .assign-btn:hover, .track-btn:hover, .details-btn:hover {
@@ -543,11 +762,24 @@ body {
 }
 
 .assign-btn {
-    color: #27ae60;
+    background-color: #3498db;
+    color: white;
+}
+
+.assign-btn:hover {
+    background-color: #2980b9;
 }
 
 .track-btn {
     color: #e67e22;
+}
+
+.ai-allocate-btn {
+    background-color: #9b59b6;
+}
+
+.ai-allocate-btn:hover {
+    background-color: #8e44ad;
 }
 
 /* Analytics Section */
@@ -594,6 +826,115 @@ body {
 
 #export-excel {
     color: #27ae60;
+}
+
+/* Disaster Icons and Map Markers */
+.disaster-icon,
+.shelter-marker,
+.hospital-marker {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.shelter-marker i {
+    color: #27ae60;
+    font-size: 16px;
+}
+
+.hospital-marker i {
+    color: #e74c3c;
+    font-size: 16px;
+}
+
+.disaster-icon .icon-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.disaster-icon.flood .icon-inner {
+    background-color: #3498db;
+}
+
+.disaster-icon.fire .icon-inner {
+    background-color: #e74c3c;
+}
+
+.disaster-icon.cyclone .icon-inner {
+    background-color: #9b59b6;
+}
+
+.disaster-icon.earthquake .icon-inner {
+    background-color: #e67e22;
+}
+
+.disaster-icon.drought .icon-inner {
+    background-color: #f1c40f;
+}
+
+.disaster-icon.heatwave .icon-inner {
+    background-color: #c0392b;
+}
+
+@media screen and (max-width: 768px) {
+    .resource-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .resource-card {
+        margin-bottom: 10px;
+    }
+
+    .resource-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .resource-actions button {
+        width: 100%;
+    }
+
+    .tab-navigation {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 5px;
+    }
+
+    .tab-btn {
+        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .disaster-popup {
+        max-width: 250px;
+    }
+
+    .popup-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .popup-actions button {
+        width: 100%;
+        margin: 2px 0;
+    }
+
+    .leaflet-popup-content {
+        margin: 10px;
+        width: auto !important;
+    }
 }
 
 /* Resource tracking section */
@@ -736,6 +1077,33 @@ body {
 .details-btn {
     background-color: #f8f9fa;
     color: #2c3e50;
+}
+
+/* Hospital and Shelter Markers */
+.hospital-marker, .shelter-marker {
+    background: white;
+    border-radius: 50%;
+    border: 2px solid;
+    width: 30px !important;
+    height: 30px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.hospital-marker {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.shelter-marker {
+    border-color: #27ae60;
+    color: #27ae60;
+}
+
+.hospital-marker i, .shelter-marker i {
+    font-size: 16px;
 }
 
 /* Analytics section */
